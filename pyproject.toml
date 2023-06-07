@@ -1,3 +1,6 @@
+[tool.black]
+line-length = 120
+
 [tool.ruff]
 line-length = 120
 ignore = ["F722"]
@@ -19,3 +22,9 @@ section-order = [
 "ml" = ["numpy", "scipy", "sklearn", "pandas"]
 "jax" = ["jax", "jaxtyping", "optax"]
 "dm" = ["haiku", "rlax", "chex"]
+
+[tool.pytest.ini_options]
+"filterwarnings" = [
+    "ignore::DeprecationWarning:haiku.*:",
+    "ignore::DeprecationWarning:jax.*:"
+]
