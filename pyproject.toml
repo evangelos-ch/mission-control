@@ -1,0 +1,21 @@
+[tool.ruff]
+line-length = 120
+ignore = ["F722"]
+
+[tool.ruff.isort]
+combine-as-imports = true
+section-order = [
+    "future",
+    "standard-library",
+    "ml",
+    "jax",
+    "dm",
+    "third-party",
+    "first-party",
+    "local-folder"
+]
+
+[tool.ruff.isort.sections]
+"ml" = ["numpy", "scipy", "sklearn", "pandas"]
+"jax" = ["jax", "jaxtyping", "optax"]
+"dm" = ["haiku", "rlax", "chex"]
