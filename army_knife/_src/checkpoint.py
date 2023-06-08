@@ -1,5 +1,4 @@
 """Heavily based on https://github.com/kevinzakka/torchkit"""
-import logging
 import signal
 import tempfile
 from pathlib import Path
@@ -22,7 +21,7 @@ class Checkpoint:
         try:
             orig_handler = signal.getsignal(signal.SIGINT)
             signal.signal(signal.SIGINT, lambda _sig, _frame: None)
-        except ValueError:
+        except ValueError:  # pragma: no cover
             # Signal throws a ValueError if we're not in the main thread.
             orig_handler = None
 
@@ -60,9 +59,6 @@ class CheckpointManager:
             return None, 0
         last_ckpt = ckpts[-1]
         ckpt = self._load(last_ckpt.stem)
-        if not ckpt:
-            logging.info("Could not restore latest checkpoint file.")
-            return None, 0
         return ckpt, int(last_ckpt.stem)
 
     def _load(self, name: str) -> Checkpoint | None:

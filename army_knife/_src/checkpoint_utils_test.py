@@ -1,9 +1,9 @@
 import jax
 import jax.numpy as jnp
-import optax
 
 import chex
 import haiku as hk
+import optax
 
 from .checkpoint_utils import load_pytree, save_pytree
 

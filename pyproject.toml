@@ -27,16 +27,22 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-wandb = ["wandb", "ffmpeg", "moviepy"]
+wandb = ["wandb", "pillow", "ffmpeg", "moviepy", "imageio"]
 tensorboard = ["tensorboard", "tensorboardX", "crc32c"]
 tests = [
     "pytest",
     "pytest-xdist",
+    "pytest-cov",
+    "pytest-env",
     "ruff",
     "beartype",
     "jaxlib==0.4.10",
     "dm-haiku==0.0.9",
-    "optax==0.1.5"
+    "optax==0.1.5",
+    "wandb",
+    "pillow",
+    "moviepy",
+    "imageio"
 ]
 
 [build-system]
@@ -69,12 +75,14 @@ section-order = [
 
 [tool.ruff.isort.sections]
 "ml" = ["numpy", "scipy", "sklearn", "pandas"]
-"jax" = ["jax", "jaxtyping", "optax"]
-"dm" = ["haiku", "rlax", "chex"]
+"jax" = ["jax", "jaxtyping"]
+"dm" = ["haiku", "rlax", "chex", "optax"]
 
 [tool.pytest.ini_options]
-"filterwarnings" = [
-    "ignore::DeprecationWarning:haiku.*:",
-    "ignore::DeprecationWarning:jax.*:"
-]
-addopts = "--jaxtyping-packages=army_knife,beartype.beartype(conf=beartype.BeartypeConf(strategy=beartype.BeartypeStrategy.On))"
+# TODO(angel): Far from ideal but can't seem to disable wandb DeprecationWarnings otherwise, and lots of other modules used during testing throw them too...
+"filterwarnings" = ["ignore::DeprecationWarning:"]
+"addopts" = "--cov=army_knife --cov-report=term-missing:skip-covered --jaxtyping-packages=army_knife,beartype.beartype(conf=beartype.BeartypeConf(strategy=beartype.BeartypeStrategy.On))"
+"env" = ["WANDB_MODE=offline"]
+
+[tool.coverage.run]
+omit = ["*_test.py"]

@@ -1,10 +1,10 @@
 """Heavily based on https://github.com/kevinzakka/torchkit"""
 import jax
 import jax.numpy as jnp
-import optax
 
 import chex
 import haiku as hk
+import optax
 
 import pytest
 
@@ -48,6 +48,38 @@ def test_checkpoint_manager(tmp_path, init_model_and_optimizer):
     ckpts = [int(d.stem) for d in available_ckpts]
     expected = list(range(5, 10))
     assert all([a == b for a, b in zip(ckpts, expected)])
-    ckpt, global_step = checkpoint_manager.restore_or_initialize()
+    _, global_step = checkpoint_manager.restore_or_initialize()
     assert global_step == 9
     assert int(checkpoint_manager.latest_checkpoint.stem) == 9
+
+
+def test_checkpoint_manager_no_checkpoints(tmp_path):
+    ckpt_dir = tmp_path / "ckpts"
+    checkpoint_manager = CheckpointManager(
+        ckpt_dir,
+        max_to_keep=5,
+    )
+    with pytest.raises(ValueError):
+        checkpoint_manager.load_latest_checkpoint()
+
+
+def test_checkpoint_manager_load_checkpoint_at(tmp_path, init_model_and_optimizer):
+    _, key, params, _, opt_state = init_model_and_optimizer
+    ckpt_dir = tmp_path / "ckpts"
+    checkpoint_manager = CheckpointManager(
+        ckpt_dir,
+        max_to_keep=5,
+    )
+    checkpoint_manager.restore_or_initialize()
+    for i in range(10):
+        checkpoint_manager.save(i, model_params=params, adam_state=opt_state, rng=key)
+
+    ckpt_8, global_step = checkpoint_manager.load_checkpoint_at(8)
+    assert ckpt_8 is not None
+    assert global_step == 8
+
+    with pytest.raises(ValueError):
+        checkpoint_manager.load_checkpoint_at(4)
+
+    with pytest.raises(ValueError):
+        checkpoint_manager.load_checkpoint_at(10)
