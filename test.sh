@@ -3,7 +3,7 @@
 # Modified from https://github.com/kevinzakka/torchkit/blob/master/scripts/lint.sh
 set -xeo pipefail
 
-SRC_FILES=(army_knife/_src/ setup.py)
+SRC_FILES=(army_knife/_src/)
 
 if [ "$(uname)" == "Darwin" ]; then
   N_CPU=$(sysctl -n hw.ncpu)

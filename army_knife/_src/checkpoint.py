@@ -4,14 +4,14 @@ import signal
 import tempfile
 from pathlib import Path
 
-import chex
+from jaxtyping import PyTree
 
 from .checkpoint_utils import load_pytree, save_pytree
 from .utils import unique_id
 
 
 class Checkpoint:
-    def __init__(self, **kwargs: dict[str, chex.ArrayTree]):
+    def __init__(self, **kwargs: dict[str, PyTree]):
         for k, v in sorted(kwargs.items()):
             setattr(self, k, v)
 
@@ -50,7 +50,7 @@ class CheckpointManager:
         self.directory.mkdir(parents=True, exist_ok=True)
         self.max_to_keep = max_to_keep
 
-    def save(self, global_step: int, **kwargs: dict[str, chex.ArrayTree]):
+    def save(self, global_step: int, **kwargs: dict[str, PyTree]):
         Checkpoint(global_step=global_step, **kwargs).save(self.directory, str(global_step))
         self._trim_checkpoints()
 

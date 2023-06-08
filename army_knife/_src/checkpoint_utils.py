@@ -5,11 +5,10 @@ from pathlib import Path
 import numpy as np
 
 import jax
+from jaxtyping import PyTree
 
-import chex
 
-
-def save_pytree(tree: chex.ArrayTree, save_path: Path, name: str) -> tuple[Path, Path]:
+def save_pytree(tree: PyTree, save_path: Path, name: str) -> tuple[Path, Path]:
     assert save_path.is_dir()
 
     arr_file = save_path / f"{name}.npy"
@@ -26,7 +25,7 @@ def save_pytree(tree: chex.ArrayTree, save_path: Path, name: str) -> tuple[Path,
     return arr_file, tree_file
 
 
-def load_pytree(save_path: Path, name: str) -> chex.ArrayTree:
+def load_pytree(save_path: Path, name: str) -> PyTree:
     assert save_path.is_dir()
 
     with open(save_path / f"{name}.pkl", "rb") as f:

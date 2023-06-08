@@ -1,3 +1,52 @@
+[project]
+name = "army-knife"
+version = "0.0.1"
+description = "Army Knife: Utilities for running ML experiments with JAX."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+authors = [{ name = "Evangelos Chatzaroulas", email = "me@evangelos.ai" }]
+keywords = ["python", "machine learning", "experiments", "logging", "jax"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+urls = { repository = "https://github.com/evangelos-ch/army-knife" }
+dependencies = [
+    "jax==0.4.11",
+    "jaxtyping>=0.2.20",
+    "optax==0.1.5",
+    "chex==0.1.7"
+]
+
+[project.optional-dependencies]
+wandb = ["wandb", "ffmpeg", "moviepy"]
+tensorboard = ["tensorboard", "tensorboardX", "crc32c"]
+tests = [
+    "pytest",
+    "pytest-xdist",
+    "ruff",
+    "beartype",
+    "jaxlib==0.4.10",
+    "dm-haiku==0.0.9",
+    "optax==0.1.5"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = ["army_knife/*.py"]
+exclude = ["*_test.py"]
+
 [tool.black]
 line-length = 120
 
@@ -28,3 +77,4 @@ section-order = [
     "ignore::DeprecationWarning:haiku.*:",
     "ignore::DeprecationWarning:jax.*:"
 ]
+addopts = "--jaxtyping-packages=army_knife,beartype.beartype(conf=beartype.BeartypeConf(strategy=beartype.BeartypeStrategy.On))"
