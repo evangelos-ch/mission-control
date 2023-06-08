@@ -34,7 +34,6 @@ tests = [
     "pytest-xdist",
     "pytest-cov",
     "pytest-env",
-    "ruff",
     "beartype",
     "jaxlib==0.4.10",
     "dm-haiku==0.0.9",

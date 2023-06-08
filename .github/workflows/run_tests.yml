@@ -32,5 +32,4 @@ jobs:
               uses: pre-commit/action@v2.0.3
 
             - name: Test with pytest
-              run: ./test.sh
-              shell: bash
+              run: pytest -n auto army_knife/_src/
