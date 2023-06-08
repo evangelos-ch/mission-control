@@ -41,7 +41,8 @@ tests = [
     "wandb",
     "pillow",
     "moviepy",
-    "imageio"
+    "imageio",
+    "tensorboardX"
 ]
 
 [build-system]
