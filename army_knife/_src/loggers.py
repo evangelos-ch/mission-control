@@ -19,12 +19,12 @@ try:
 except ImportError:  # pragma: no cover
     WANDB_INSTALLED = False
 
-# try:
-#     import tensorboardX
+try:
+    import tensorboardX
 
-#     TENSORBOARD_INSTALLED = True
-# except ImportError:
-#     TENSORBOARD_INSTALLED = False
+    TENSORBOARD_INSTALLED = True
+except ImportError:
+    TENSORBOARD_INSTALLED = False
 
 
 Scalar = Num[Union[Array, np.ndarray], ""] | float | int
@@ -123,3 +123,53 @@ class WandbLogger(Logger):
     def close(self):
         if self._run:
             self._run.finish()
+
+
+class TensorboardLogger(Logger):
+    def __init__(self, log_dir: str | Path):
+        super().__init__(log_dir)
+        if not TENSORBOARD_INSTALLED:
+            raise ImportError(
+                "tensorboardX is not installed! Please install it with `pip install army-knife[tensorboard]`."
+            )
+
+        self._writer = tensorboardX.SummaryWriter(str(log_dir))
+
+    def log_metrics(self, metrics: dict[str, Scalar], global_step: int):
+        for key, value in metrics.items():
+            try:
+                chex.assert_rank(value, 0)
+            except AssertionError:
+                if len(value.shape) == 1 and value.shape[0] == 1:
+                    metrics[key] = value[0]
+                else:
+                    raise ValueError("Metrics must be scalars!")
+        for key, value in metrics.items():
+            self._writer.add_scalar(key, value, global_step)
+
+    def log_image(self, image: Image, name: str, global_step: int):
+        try:
+            chex.assert_rank(image, 3)
+            chex.assert_axis_dimension(image, -1, 3)
+        except AssertionError:  # pragma: no cover
+            raise TypeError("Image must be in HWC format!")
+        image = jax.device_get(image)
+        image = np.transpose(image, (2, 0, 1))  # HWC -> CHW because Tensorboard
+        self._writer.add_image(name, image, global_step)
+
+    def log_video(self, video: Video, name: str, global_step: int, fps: int = 4):
+        try:
+            chex.assert_rank(video, 4)
+            chex.assert_axis_dimension(video, -1, 3)
+        except AssertionError:  # pragma: no cover
+            raise TypeError("Video must be in THWC format!")
+        video = jax.device_get(video)
+        video = np.transpose(video, (0, 3, 1, 2))  # THWC -> TCHW because Tensorboard
+        video = video[None, ...]  # Add batch dimension
+        self._writer.add_video(name, video, global_step, fps=fps)
+
+    def log_gradients(self, gradients: Gradients, name: str, global_step: int):
+        self._writer.add_histogram(name, jax.device_get(gradients), global_step)
+
+    def close(self):
+        self._writer.close()

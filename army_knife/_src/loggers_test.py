@@ -26,12 +26,15 @@ def init_model_and_optimizer():
     return apply_fn, key, params, opt, opt_state
 
 
-@pytest.fixture(params=[loggers.WandbLogger])
+@pytest.fixture(params=[loggers.WandbLogger, loggers.TensorboardLogger])
 def logger(tmp_path, request):
     path = Path(tmp_path) / "logs"
     logger_cls = request.param
     if logger_cls == loggers.WandbLogger:
         logger = loggers.WandbLogger(path, run_name="name", project="project", config={"hparams": 0})
+        yield logger
+    elif logger_cls == loggers.TensorboardLogger:
+        logger = loggers.TensorboardLogger(path)
         yield logger
     else:
         raise NotImplementedError
