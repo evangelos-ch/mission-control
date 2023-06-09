@@ -3,7 +3,7 @@ name = "army-knife"
 version = "0.0.1"
 description = "Army Knife: Utilities for running ML experiments with JAX."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [{ name = "Evangelos Chatzaroulas", email = "me@evangelos.ai" }]
 keywords = ["python", "machine learning", "experiments", "logging", "jax"]
@@ -27,22 +27,22 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-wandb = ["wandb", "pillow", "ffmpeg", "moviepy", "imageio"]
-tensorboard = ["tensorboard", "tensorboardX", "crc32c"]
+wandb = ["wandb==0.15.4", "Pillow==9.5.0", "moviepy==1.0.3", "imageio==2.31.0"]
+tensorboard = ["tensorboard==2.13.0", "tensorboardX==2.6", "crc32c==2.3.post0"]
 tests = [
-    "pytest",
-    "pytest-xdist",
-    "pytest-cov",
-    "pytest-env",
-    "beartype",
+    "pytest==7.3.1",
+    "pytest-xdist==3.3.1",
+    "pytest-cov==4.1.0",
+    "pytest-env==0.8.1",
+    "beartype==0.14.1",
     "jaxlib==0.4.10",
     "dm-haiku==0.0.9",
     "optax==0.1.5",
-    "wandb",
-    "pillow",
-    "moviepy",
-    "imageio",
-    "tensorboardX"
+    "wandb==0.15.4",
+    "Pillow==9.5.0",
+    "moviepy==1.0.3",
+    "imageio==2.31.0",
+    "tensorboardX==2.6"
 ]
 
 [build-system]
