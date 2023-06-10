@@ -1,6 +1,6 @@
 # mission-control
 
-![CI Status](https://github.com/evangelos-ch/army-knife/workflows/CI/badge.svg)
+![CI Status](https://github.com/evangelos-ch/mission-control/workflows/CI/badge.svg)
 
 A set of utilities for retaining sanity while managing and monitoring ML experiments that utilise models written in JAX.
 
