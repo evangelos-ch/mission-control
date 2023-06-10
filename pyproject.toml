@@ -1,7 +1,7 @@
 [project]
-name = "army-knife"
+name = "mission-control"
 version = "0.0.1"
-description = "Army Knife: Utilities for running ML experiments with JAX."
+description = "Mission Control: Utilities for running ML experiments with JAX."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
@@ -18,7 +18,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-urls = { repository = "https://github.com/evangelos-ch/army-knife" }
+urls = { repository = "https://github.com/evangelos-ch/mission-control" }
 dependencies = [
     "jax==0.4.11",
     "jaxtyping>=0.2.20",
@@ -50,7 +50,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
-include = ["army_knife/*.py"]
+include = ["mission_control/*.py"]
 exclude = ["*_test.py"]
 
 [tool.black]
@@ -81,7 +81,7 @@ section-order = [
 [tool.pytest.ini_options]
 # TODO(angel): Far from ideal but can't seem to disable wandb DeprecationWarnings otherwise, and lots of other modules used during testing throw them too...
 "filterwarnings" = ["ignore::DeprecationWarning:"]
-"addopts" = "--cov=army_knife --cov-report=term-missing:skip-covered --jaxtyping-packages=army_knife,beartype.beartype(conf=beartype.BeartypeConf(strategy=beartype.BeartypeStrategy.On))"
+"addopts" = "--cov=mission_control --jaxtyping-packages=mission_control,beartype.beartype(conf=beartype.BeartypeConf(strategy=beartype.BeartypeStrategy.On))"
 "env" = ["WANDB_MODE=offline"]
 
 [tool.coverage.run]

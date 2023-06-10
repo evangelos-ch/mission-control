@@ -3,7 +3,7 @@
 # Modified from https://github.com/kevinzakka/torchkit/blob/master/scripts/lint.sh
 set -xeo pipefail
 
-SRC_FILES=(army_knife/_src/)
+SRC_FILES=(mission_control/_src/)
 
 if [ "$(uname)" == "Darwin" ]; then
   N_CPU=$(sysctl -n hw.ncpu)
@@ -17,7 +17,7 @@ black --check ${SRC_FILES}
 
 if [ "$skipexpensive-false" != "true" ]; then
   echo "Running tests"
-  pytest -n "${N_CPU}" ${SRC_FILES}
+  pytest -n "${N_CPU}" --cov-report=term-missing:skip-covered ${SRC_FILES}
 
   # echo "Type checking"
   # pytype -n "${N_CPU}" ${SRC_FILES[@]}

@@ -1,4 +1,4 @@
-name: Run tests
+name: CI
 
 on:
     push:
@@ -32,4 +32,9 @@ jobs:
               uses: pre-commit/action@v2.0.3
 
             - name: Test with pytest
-              run: pytest -n auto army_knife/_src/
+              run: pytest -n auto -- mission_control/_src/
+
+            - name: Upload coverage reports to Codecov
+              uses: codecov/codecov-action@v3
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

@@ -112,3 +112,13 @@ def test_wandb_not_installed(tmp_path):
         loggers.WandbLogger(path, run_name="name", project="project", config={"hparams": 0})
 
     loggers.WANDB_INSTALLED = True
+
+
+def test_tensorboard_not_installed(tmp_path):
+    path = Path(tmp_path) / "logs"
+    loggers.TENSORBOARD_INSTALLED = False
+
+    with pytest.raises(ImportError):
+        loggers.TensorboardLogger(path)
+
+    loggers.TENSORBOARD_INSTALLED = True

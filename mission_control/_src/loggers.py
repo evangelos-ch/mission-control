@@ -23,7 +23,7 @@ try:
     import tensorboardX
 
     TENSORBOARD_INSTALLED = True
-except ImportError:
+except ImportError:  # pragma: no cover
     TENSORBOARD_INSTALLED = False
 
 
@@ -71,7 +71,7 @@ class WandbLogger(Logger):
         run_id: str = unique_id(),
     ):
         if not WANDB_INSTALLED:
-            raise ImportError("Wandb is not installed! Please install it with `pip install army-knife[wandb]`.")
+            raise ImportError("Wandb is not installed! Please install it with `pip install mission-control[wandb]`.")
 
         super().__init__(log_dir)
         self._run = wandb.init(
@@ -130,7 +130,7 @@ class TensorboardLogger(Logger):
         super().__init__(log_dir)
         if not TENSORBOARD_INSTALLED:
             raise ImportError(
-                "tensorboardX is not installed! Please install it with `pip install army-knife[tensorboard]`."
+                "tensorboardX is not installed! Please install it with `pip install mission-control[tensorboard]`."
             )
 
         self._writer = tensorboardX.SummaryWriter(str(log_dir))
