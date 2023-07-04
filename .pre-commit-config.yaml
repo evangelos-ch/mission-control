@@ -12,3 +12,4 @@ repos:
       hooks:
           - id: mypy
             args: [--ignore-missing-imports]
+            additional_dependencies: [chex==0.1.7, jaxtyping==0.2.20, wandb==0.15.4, numpy==1.22.4]

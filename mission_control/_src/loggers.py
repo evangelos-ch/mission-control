@@ -1,7 +1,7 @@
 """Heavily based on https://github.com/kevinzakka/torchkit"""
 from abc import ABCMeta, abstractmethod
 from pathlib import Path
-from typing import Union
+from typing import TypeAlias, Union
 
 import numpy as np
 
@@ -26,12 +26,12 @@ try:
 except ImportError:  # pragma: no cover
     TENSORBOARD_INSTALLED = False
 
-ScalarArray = Num[Union[Array, np.ndarray], ""]
-Scalar = ScalarArray | float | int
-Gradients = Float[Union[Array, np.ndarray], "..."]
+ScalarArray: TypeAlias = Num[Union[Array, np.ndarray], ""]
+Scalar: TypeAlias = ScalarArray | float | int
+Gradients: TypeAlias = Float[Union[Array, np.ndarray], "..."]
 
-Image = Num[Union[Array, np.ndarray], "height width 3"]
-Video = Num[Image, "timestep"]
+Image: TypeAlias = Num[Union[Array, np.ndarray], "height width 3"]
+Video: TypeAlias = Num[Image, " timestep"]
 
 
 class Logger(metaclass=ABCMeta):
