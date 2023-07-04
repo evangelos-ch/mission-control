@@ -10,12 +10,13 @@ from .utils import unique_id
 
 
 class Checkpoint:
-    def __init__(self, **kwargs: dict[str, PyTree]):
+    def __init__(self, **kwargs: PyTree):
         for k, v in sorted(kwargs.items()):
             setattr(self, k, v)
 
     def save(self, save_path: str | Path, name: str) -> tuple[Path, Path]:
-        assert Path(save_path).is_dir()
+        save_path = Path(save_path)
+        assert save_path.is_dir()
 
         # Ignore ctrl+c while saving.
         try:
@@ -49,7 +50,7 @@ class CheckpointManager:
         self.directory.mkdir(parents=True, exist_ok=True)
         self.max_to_keep = max_to_keep
 
-    def save(self, global_step: int, **kwargs: dict[str, PyTree]):
+    def save(self, global_step: int, **kwargs: dict[str, PyTree | int | float]):
         Checkpoint(global_step=global_step, **kwargs).save(self.directory, str(global_step))
         self._trim_checkpoints()
 
@@ -61,7 +62,7 @@ class CheckpointManager:
         ckpt = self._load(last_ckpt.stem)
         return ckpt, int(last_ckpt.stem)
 
-    def _load(self, name: str) -> Checkpoint | None:
+    def _load(self, name: str) -> Checkpoint:
         return Checkpoint.load(self.directory, name)
 
     def _trim_checkpoints(self):
@@ -75,7 +76,7 @@ class CheckpointManager:
             tree.unlink()
 
     def load_latest_checkpoint(self) -> tuple[Checkpoint, int]:
-        return self._load(self.latest_checkpoint.stem), self.latest_checkpoint.stem
+        return self._load(self.latest_checkpoint.stem), int(self.latest_checkpoint.stem)
 
     def load_checkpoint_at(self, global_step: int) -> tuple[Checkpoint, int]:
         if str(global_step) not in [x.stem for x in CheckpointManager.list_checkpoints(self.directory)]:
@@ -83,15 +84,15 @@ class CheckpointManager:
         return self._load(str(global_step)), global_step
 
     @property
-    def latest_checkpoint(self) -> Path | None:
+    def latest_checkpoint(self) -> Path:
         checkpoints = self.list_checkpoints(self.directory)
         if not checkpoints:
             raise ValueError(f"No checkpoints found in {self.directory}.")
         return checkpoints[-1]
 
     @staticmethod
-    def list_checkpoints(directory: str | Path, arrays: bool = True, treedefs: bool = False) -> list[Path] | None:
-        files = []
+    def list_checkpoints(directory: str | Path, arrays: bool = True, treedefs: bool = False) -> list[Path]:
+        files: list[Path] = []
         directory = Path(directory)
         if arrays:
             files += directory.glob("*.npy")

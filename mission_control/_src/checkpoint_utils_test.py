@@ -3,7 +3,7 @@ import jax.numpy as jnp
 
 import chex
 import haiku as hk
-import optax
+import optax  # type: ignore
 
 from .checkpoint_utils import load_pytree, save_pytree
 

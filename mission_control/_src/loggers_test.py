@@ -8,7 +8,7 @@ import jax.numpy as jnp
 import jax.random as jr
 
 import haiku as hk
-import optax
+import optax  # type: ignore
 
 import pytest
 from beartype.roar import BeartypeCallHintParamViolation
@@ -20,7 +20,7 @@ from . import loggers
 def init_model_and_optimizer():
     init_fn, apply_fn = hk.without_apply_rng(hk.transform(lambda x: hk.Linear(1)(x)))
     key = jr.PRNGKey(42)
-    params = init_fn(rng=key, x=jnp.arange(300, dtype=jnp.float32))
+    params = init_fn(rng=key, x=jnp.arange(10, dtype=jnp.float32))
     opt = optax.adam(1e-3)
     opt_state = opt.init(params)
     return apply_fn, key, params, opt, opt_state
@@ -56,8 +56,8 @@ class TestLogger:
     @pytest.mark.parametrize(
         "image",
         [
-            np.random.randint(0, 256, size=(224, 224, 3)),
-            jr.randint(jr.PRNGKey(42), (224, 224, 3), 0, 256),
+            np.random.randint(0, 256, size=(12, 12, 3)),
+            jr.randint(jr.PRNGKey(42), (12, 12, 3), 0, 256),
         ],
     )
     def test_log_image(self, logger: loggers.Logger, image):
@@ -66,10 +66,10 @@ class TestLogger:
     @pytest.mark.parametrize(
         "image",
         [
-            np.random.randint(0, 256, size=(3, 224, 224)),
-            np.random.randint(0, 256, size=(2, 224, 224, 3)),
-            jr.randint(jr.PRNGKey(42), (3, 224, 224), 0, 256),
-            jr.randint(jr.PRNGKey(42), (2, 224, 224, 3), 0, 256),
+            np.random.randint(0, 256, size=(3, 12, 12)),
+            np.random.randint(0, 256, size=(2, 12, 12, 3)),
+            jr.randint(jr.PRNGKey(42), (3, 12, 12), 0, 256),
+            jr.randint(jr.PRNGKey(42), (2, 12, 12, 3), 0, 256),
         ],
     )
     def test_log_image_wrong_format(self, logger: loggers.Logger, image):
@@ -79,23 +79,23 @@ class TestLogger:
     @pytest.mark.parametrize(
         "video",
         [
-            np.random.randint(0, 256, size=(5, 224, 224, 3)),
-            jr.randint(jr.PRNGKey(42), (5, 224, 224, 3), 0, 256),
+            np.random.randint(0, 256, size=(5, 12, 12, 3)),
+            jr.randint(jr.PRNGKey(42), (5, 12, 12, 3), 0, 256),
         ],
     )
     def test_log_video(self, logger: loggers.Logger, video):
         logger.log_video(video, global_step=0, name="video")
 
     def test_log_video_wrongdim(self, logger: loggers.Logger):
-        image = np.random.randint(0, 256, (224, 224, 3))
+        image = np.random.randint(0, 256, (12, 12, 3))
         with pytest.raises(BeartypeCallHintParamViolation):
             logger.log_video(image, global_step=0, name="video")
 
     def test_log_gradients(self, logger: loggers.Logger, init_model_and_optimizer):
         apply_fn, key, params, opt, opt_state = init_model_and_optimizer
         key, subkey = jr.split(key)
-        x = jr.normal(key=subkey, shape=(300,))
-        y = jr.normal(key=key, shape=(300,))
+        x = jr.normal(key=subkey, shape=(10,))
+        y = jr.normal(key=key, shape=(10,))
 
         def _loss_fn(_x, _p, _y):
             return jnp.mean(jnp.square(apply_fn(x=_x, params=_p) - _y))

@@ -19,6 +19,6 @@ if [ "$skipexpensive-false" != "true" ]; then
   echo "Running tests"
   pytest -n "${N_CPU}" --cov-report=term-missing:skip-covered ${SRC_FILES}
 
-  # echo "Type checking"
-  # pytype -n "${N_CPU}" ${SRC_FILES[@]}
+  echo "Type checking"
+  mypy mission_control
 fi

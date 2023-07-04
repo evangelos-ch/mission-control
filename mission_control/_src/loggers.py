@@ -20,14 +20,14 @@ except ImportError:  # pragma: no cover
     WANDB_INSTALLED = False
 
 try:
-    import tensorboardX
+    import tensorboardX  # type: ignore
 
     TENSORBOARD_INSTALLED = True
 except ImportError:  # pragma: no cover
     TENSORBOARD_INSTALLED = False
 
-
-Scalar = Num[Union[Array, np.ndarray], ""] | float | int
+ScalarArray = Num[Union[Array, np.ndarray], ""]
+Scalar = ScalarArray | float | int
 Gradients = Float[Union[Array, np.ndarray], "..."]
 
 Image = Num[Union[Array, np.ndarray], "height width 3"]
@@ -90,6 +90,7 @@ class WandbLogger(Logger):
             try:
                 chex.assert_rank(value, 0)
             except AssertionError:
+                assert isinstance(value, (jax.Array, np.ndarray))
                 if len(value.shape) == 1 and value.shape[0] == 1:
                     metrics[key] = value[0]
                 else:
@@ -140,6 +141,7 @@ class TensorboardLogger(Logger):
             try:
                 chex.assert_rank(value, 0)
             except AssertionError:
+                assert isinstance(value, (jax.Array, np.ndarray))
                 if len(value.shape) == 1 and value.shape[0] == 1:
                     metrics[key] = value[0]
                 else:

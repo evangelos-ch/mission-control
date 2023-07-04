@@ -29,6 +29,7 @@ dependencies = [
 [project.optional-dependencies]
 wandb = ["wandb==0.15.4", "Pillow==9.5.0", "moviepy==1.0.3", "imageio==2.31.0"]
 tensorboard = ["tensorboard==2.13.0", "tensorboardX==2.6", "crc32c==2.3.post0"]
+dev = ["black==23.3.0", "ruff==0.0.275", "mypy==1.4.1"]
 tests = [
     "pytest==7.3.1",
     "pytest-xdist==3.3.1",
@@ -50,7 +51,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
-include = ["mission_control/*.py"]
+include = ["mission_control/*.py", "mission_control/py.typed"]
 exclude = ["*_test.py"]
 
 [tool.black]
